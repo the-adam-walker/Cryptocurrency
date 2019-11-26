@@ -120,7 +120,7 @@ public class Block {
 	public String convertToHex(byte[] hash) {
 		StringBuilder sb = new StringBuilder();
 		for(byte b: hash) {
-			sb.append(String.format("%02X ", b));
+			sb.append(String.format("%02X", b));
 		}
 		return sb.toString();
 	}
