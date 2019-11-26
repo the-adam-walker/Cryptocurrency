@@ -9,14 +9,14 @@ public class Transaction {
 	private String toAddress;
 	private String signature;
 	private int amount;
-	
+
 	public Transaction(String fromAddress, String toAddress, int amount) {
 		this.fromAddress = fromAddress;
 		this.toAddress = toAddress;
 		this.amount = amount;
 		this.signature = null;
 	}
-	
+
 	/*
 	 * Calculates the hash of the transaction using the SHA-256 hash function
 	 * @return the message digest of the transaction
@@ -24,10 +24,10 @@ public class Transaction {
 	private String calculateHash() {
 
 		String dataToHash = "" + this.fromAddress + this.toAddress + this.amount;
-		
+
 		MessageDigest digest;
 		String encoded = null;
-		
+
 		try {
 			digest = MessageDigest.getInstance("SHA-256");
 			byte[] hash = digest.digest(dataToHash.getBytes(StandardCharsets.UTF_8));
@@ -38,20 +38,20 @@ public class Transaction {
 		
 		return encoded;
 	}
-	
+
 	private void signTransaction(String key) {
-		
+
 		// TODO: sign the transaction using the hash of the tx
-		
+
 	}
-	
+
 	private Boolean isValid() {
-		
+
 		//TODO: check if the tx has a valid signature
-		
+
 		return false;
 	}
-	
+
 	/*
 	 * Creates a readable version of the transaction
 	 * @return String
@@ -59,15 +59,15 @@ public class Transaction {
 	public String toString() {
 		return "From: " + fromAddress + " To: " + toAddress + " Amount: " + amount;
 	}
-	
+
 	public String getFromAddress() {
 		return this.fromAddress;
 	}
-	
+
 	public String getToAddress() {
 		return this.toAddress;
 	}
-	
+
 	public int getAmount() {
 		return this.amount;
 	}
