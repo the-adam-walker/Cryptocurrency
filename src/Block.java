@@ -91,11 +91,15 @@ public class Block {
 		return this.hash;
 	}
 
-	private Boolean hasValidTransactions() {
+	public Boolean hasValidTransactions() {
 
-		//TODO: Check validity of all transactions
+		for (int transaction = 0; transaction < txs.size(); transaction++) {
+			if(!txs.get(transaction).isValid()) {
+				return false;
+			}
+		}
 
-		return false;
+		return true;
 	}
 
 	public List<Transaction> getTransactions() {
@@ -117,6 +121,9 @@ public class Block {
 		this.txs.add(txn);
 	}
 
+	/*
+	 * Converts an array of data to hex and returns it as a string
+	 */
 	public String convertToHex(byte[] hash) {
 		StringBuilder sb = new StringBuilder();
 		for(byte b: hash) {

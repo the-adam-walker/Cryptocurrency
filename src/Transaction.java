@@ -1,16 +1,14 @@
 import java.nio.charset.StandardCharsets;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-import java.util.Base64;
+import java.security.*;
 
 public class Transaction {
 
-	private String fromAddress;
-	private String toAddress;
-	private String signature;
+	private Wallet fromAddress;
+	private Wallet toAddress;
+	private byte[] signature;
 	private int amount;
 
-	public Transaction(String fromAddress, String toAddress, int amount) {
+	public Transaction(Wallet fromAddress, Wallet toAddress, int amount) {
 		this.fromAddress = fromAddress;
 		this.toAddress = toAddress;
 		this.amount = amount;
@@ -31,25 +29,65 @@ public class Transaction {
 		try {
 			digest = MessageDigest.getInstance("SHA-256");
 			byte[] hash = digest.digest(dataToHash.getBytes(StandardCharsets.UTF_8));
-			encoded = Base64.getEncoder().encodeToString(hash);
+			encoded = convertToHex(hash);
 		} catch (NoSuchAlgorithmException e) {
 			e.printStackTrace();
 		}
-		
+
 		return encoded;
 	}
 
-	private void signTransaction(String key) {
+	public void signTransaction(Wallet w) {
 
-		// TODO: sign the transaction using the hash of the tx
+		try {
+			if (w.publicKey != this.fromAddress.publicKey) {
+				throw new Error("You cannot sign this transaction");
+			}
+			Signature signature = Signature.getInstance("SHA256withECDSA");
+			signature.initSign(w.privateKey);
+			byte[] data = calculateHash().getBytes();
+			signature.update(data);
+			this.signature = signature.sign();
+		} catch (NoSuchAlgorithmException e) {
+			e.printStackTrace();
+		} catch (InvalidKeyException e) {
+			e.printStackTrace();
+		} catch (SignatureException e) {
+			e.printStackTrace();
+		} catch (Error e) {
+			e.printStackTrace();
+		}
+
 
 	}
 
-	private Boolean isValid() {
+	public Boolean isValid() {
 
-		//TODO: check if the tx has a valid signature
+		if (this.fromAddress == null) {
+			return true;
+		}
+
+		try {
+			if (this.signature == null || this.signature.length == 0) {
+				throw new Error("No signature in this transaction");
+			}
+
+			Signature signature = Signature.getInstance("SHA256withECDSA");
+			signature.initVerify(this.fromAddress.publicKey);
+			signature.update(calculateHash().getBytes());
+			return signature.verify(this.signature);
+		} catch (NoSuchAlgorithmException e) {
+			e.printStackTrace();
+		} catch (InvalidKeyException e) {
+			e.printStackTrace();
+		} catch (SignatureException e) {
+			e.printStackTrace();
+		} catch (Error e) {
+			e.printStackTrace();
+		}
 
 		return false;
+
 	}
 
 	/*
@@ -57,14 +95,28 @@ public class Transaction {
 	 * @return String
 	 */
 	public String toString() {
-		return "From: " + fromAddress + " To: " + toAddress + " Amount: " + amount;
+		if (fromAddress == null) {
+			return "From: mining reward " + " To: " + convertToHex(toAddress.publicKey.getEncoded()) + " Amount: " + amount;
+		}
+		return "From: " + convertToHex(fromAddress.publicKey.getEncoded()) + " To: " + convertToHex(toAddress.publicKey.getEncoded()) + " Amount: " + amount;
 	}
 
-	public String getFromAddress() {
+	/*
+	 * Converts an array of data to hex and returns it as a string
+	 */
+	public String convertToHex(byte[] hash) {
+		StringBuilder sb = new StringBuilder();
+		for(byte b: hash) {
+			sb.append(String.format("%02X", b));
+		}
+		return sb.toString();
+	}
+
+	public Wallet getFromAddress() {
 		return this.fromAddress;
 	}
 
-	public String getToAddress() {
+	public Wallet getToAddress() {
 		return this.toAddress;
 	}
 

@@ -1,11 +1,11 @@
  // Use java.security to generate public private key pairs
 import java.security.*;
 
-public class Keys {
+public class Wallet {
   public PublicKey publicKey;
   public PrivateKey privateKey;
 
-  public Keys() {
+  public Wallet() {
     KeyPair keyPair =  generatePrivatePublicKeyPair();
     this.publicKey = keyPair.getPublic();
     this.privateKey = keyPair.getPrivate();
