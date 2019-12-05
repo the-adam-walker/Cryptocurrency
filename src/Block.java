@@ -79,7 +79,7 @@ public class Block {
 		this.hash = this.computeHash();
 
 		String zeros = "";
-		for (int i = 0; i < difficulty; i++) {
+		for (int i = 0; i < difficulty; i++) { // Create a string of zeros of length difficulty
 			zeros += "0";
 		}
 
@@ -91,6 +91,11 @@ public class Block {
 		return this.hash;
 	}
 
+	/*
+	 * Iterates through all the transactions in the list of transactions and if
+	 * the transaction is invalid, return false, otherwise return true.
+	 * @return Boolean T/F
+	 */
 	public Boolean hasValidTransactions() {
 
 		for (int transaction = 0; transaction < txs.size(); transaction++) {

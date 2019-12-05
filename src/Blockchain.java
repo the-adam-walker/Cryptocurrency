@@ -114,16 +114,22 @@ public class Blockchain {
 	public String isBlockChainValid() {
 
 		for (int block = this.chain.size() - 1; block > 0; block--) {
-			if (!this.chain.get(block).hasValidTransactions()) {
+			if (!this.chain.get(block).hasValidTransactions()) { // does the current block have only valid transcations
 				return "Invalid";
 			}
 			String previousBlockHash = this.chain.get(block - 1).getHash();
 			String currentBlockPreviousHash = this.chain.get(block).getPreviousHash();
+			/*
+			 * Compares the hash of the previous block with the current blocks previousHash field value
+			 */
 			if (previousBlockHash.compareTo(currentBlockPreviousHash) != 0) {
 				return "Invalid";
 			}
 			String currentBlockHash = this.chain.get(block).getHash();
 			String computedCurrentBlockHash = this.chain.get(block).mineBlock(this.difficulty);
+			/*
+			 * Compares a new computed hash of the current block with that of the current blocks stored hash value
+			 */
 			if(currentBlockHash.compareTo(computedCurrentBlockHash) != 0) {
 				return "Invalid";
 			}

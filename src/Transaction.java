@@ -37,10 +37,14 @@ public class Transaction {
 		return encoded;
 	}
 
+	/*
+	 * takes a transaction object and signs the transcation filling the signature field
+	 * @return byte[] signature
+	 */
 	public void signTransaction(Wallet w) {
 
 		try {
-			if (w.publicKey != this.fromAddress.publicKey) {
+			if (w.publicKey != this.fromAddress.publicKey) { //If the from address of the transaction is the same as the signer
 				throw new Error("You cannot sign this transaction");
 			}
 			Signature signature = Signature.getInstance("SHA256withECDSA");
@@ -61,14 +65,18 @@ public class Transaction {
 
 	}
 
+	/*
+	 * Checks to see if the current transcation is valid.
+	 * @return Boolean T/F
+	 */
 	public Boolean isValid() {
 
-		if (this.fromAddress == null) {
+		if (this.fromAddress == null) { // Is the fromAddress null i.e. mining reward
 			return true;
 		}
 
 		try {
-			if (this.signature == null || this.signature.length == 0) {
+			if (this.signature == null || this.signature.length == 0) { //If there is no signature
 				throw new Error("No signature in this transaction");
 			}
 

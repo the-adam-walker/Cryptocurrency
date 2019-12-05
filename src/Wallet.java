@@ -11,6 +11,10 @@ public class Wallet {
     this.privateKey = keyPair.getPrivate();
   }
 
+  /*
+   * Generates a private public key pair using the EC algorithm of length 256 bits
+   * @return KeyPair
+   */
   private KeyPair generatePrivatePublicKeyPair() {
     try {
       KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance("EC");
@@ -22,7 +26,10 @@ public class Wallet {
     }
     return null;
   }
-
+  
+  /*
+	 * Converts an array of data to hex and returns it as a string
+	 */
   public String convertKeyToHex(byte[] key) {
     StringBuilder sb = new StringBuilder();
     for(byte b: key) {
